@@ -1,6 +1,8 @@
-import styled from "@emotion/styled";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import styled from '@emotion/styled';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import useAxios from '../../src/useAxios';
 
 const InputWrapper = styled.div`
   display: : flex;
@@ -10,10 +12,10 @@ const InputWrapper = styled.div`
 
 export default function SignUp() {
   const [inputValues, setInputValues] = useState({
-    email: "",
-    name: "",
-    password: "",
-    nickName: "",
+    email: '',
+    name: '',
+    password: '',
+    nickName: '',
     year: 0,
     month: 0,
     day: 0,
@@ -22,7 +24,7 @@ export default function SignUp() {
   const router = useRouter();
 
   const onChangeInput = (gubun) => (event) => {
-    const newValue = ["year", "month", "day"].includes(gubun)
+    const newValue = ['year', 'month', 'day'].includes(gubun)
       ? Number(event.target.value)
       : event.target.value;
     setInputValues((prev) => {
@@ -30,33 +32,57 @@ export default function SignUp() {
     });
   };
 
+  const axiosInstance = axios.create({
+    baseURL: 'https: //backend.withchat.site/',
+  });
+
+  const [axios] = useAxios();
+
   const onClickSignUp = async () => {
     if (Object.values(inputValues).filter((el) => !el).length > 0)
-      alert("입력 누락");
+      alert('입력 누락');
 
     // 회원가입 API 호출
+    // async ~ await 하려면 try ~ catch 해줘야함
+    // const result = await axios.post(
+    //   'https: //backend.withchat.site/users',
+    //   inputValues
+    // );
 
-    router.push("/signin");
+    // const result2 = axios
+    //   .post('https: //backend.withchat.site/users', inputValues)
+    //   .then((res) =>
+    //     // if(!res.data.success) throw // return 대신 error 값을 넣어줌
+    //     res.data.data;
+    //   );
+
+    const result3 = await axiosInstance
+      .post('/users', inputValues)
+      .then((res) => {
+        res.data.data;
+      });
+
+    router.push('/signin');
   };
 
   return (
     <div>
       <InputWrapper>
-        email: <input onChange={onChangeInput("email")} />
+        email: <input onChange={onChangeInput('email')} />
       </InputWrapper>
       <InputWrapper>
-        name: <input onChange={onChangeInput("name")} />
+        name: <input onChange={onChangeInput('name')} />
       </InputWrapper>
       <InputWrapper>
-        password: <input type="password" onChange={onChangeInput("password")} />
+        password: <input type="password" onChange={onChangeInput('password')} />
       </InputWrapper>
       <InputWrapper>
-        nickName: <input onChange={onChangeInput("nickName")} />
+        nickName: <input onChange={onChangeInput('nickName')} />
       </InputWrapper>
       <InputWrapper>
-        birthDate: <input type="number" onChange={onChangeInput("year")} />년
-        <input type="number" onChange={onChangeInput("month")} />월
-        <input type="number" onChange={onChangeInput("day")} />일
+        birthDate: <input type="number" onChange={onChangeInput('year')} />년
+        <input type="number" onChange={onChangeInput('month')} />월
+        <input type="number" onChange={onChangeInput('day')} />일
       </InputWrapper>
       <button onClick={onClickSignUp}>회원가입</button>
     </div>

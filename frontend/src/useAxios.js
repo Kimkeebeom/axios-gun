@@ -1,14 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
 export default function useAxios() {
   const myAxios = axios.create({
-    baseURL: "http://localhost:4000/",
+    baseURL: 'https://backend.withchat.site/',
     headers: {
       Authorization: `Bearer ${
-        typeof window !== "undefined" ? localStorage.getItem("accessToken") : ""
+        typeof window !== 'undefined' ? localStorage.getItem('accessToken') : ''
       }`,
     },
   });
-
   return [myAxios];
 }
